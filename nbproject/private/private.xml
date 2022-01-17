@@ -5,6 +5,7 @@
         <group>
             <file>file:/home/kai/NetBeansProjects/Web_Bug_Tracker/web/META-INF/context.xml</file>
             <file>file:/home/kai/NetBeansProjects/Web_Bug_Tracker/web/ListaBugs.jsp</file>
+            <file>file:/home/kai/NetBeansProjects/Web_Bug_Tracker/web/Actualizar_bugs.jsp</file>
             <file>file:/home/kai/NetBeansProjects/Web_Bug_Tracker/src/java/paquete/com/Bugtracker/ControladorBug.java</file>
             <file>file:/home/kai/NetBeansProjects/Web_Bug_Tracker/src/java/paquete/com/Bugtracker/Bug.java</file>
             <file>file:/home/kai/NetBeansProjects/Web_Bug_Tracker/src/java/paquete/com/Bugtracker/ModeloBug.java</file>

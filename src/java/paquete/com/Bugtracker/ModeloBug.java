@@ -24,6 +24,8 @@ public class ModeloBug {
 
     
     private static DataSource origenDatos;
+
+    
     
     public ModeloBug(DataSource origen){
         this.origenDatos = origen;
@@ -87,6 +89,86 @@ public class ModeloBug {
             java.sql.Date fechaConvertida;
             fechaConvertida = new java.sql.Date(fechaEnlong);            
             miStatement.setDate(6, fechaConvertida);
+            
+            miStatement.execute();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ModeloBug.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    Bug getBug(int bugID) throws Exception {
+        Bug elBug = null;
+        Connection miConnection = null;
+        PreparedStatement miStatement = null;
+        ResultSet miResulset = null;
+        int bugid = bugID;
+        
+        try {
+            
+            miConnection = origenDatos.getConnection();
+            
+            String sql = "SELECT * FROM BUG WHERE ID=?";
+            
+            miStatement = miConnection.prepareStatement(sql);
+            
+            miStatement.setInt(1, bugid);
+            
+            miResulset = miStatement.executeQuery();
+            
+            if (miResulset.next()){
+                int id = miResulset.getInt(1);
+                String name = miResulset.getString(2);
+                String type = miResulset.getString(3);
+                String description = miResulset.getString(4);
+                String status = miResulset.getString(5);
+                String user = miResulset.getString(6);
+                Date initfecha = miResulset.getDate(7);
+                Date finfecha = miResulset.getDate(8);
+                
+                elBug = new Bug(id,name,type,description,status,user,initfecha,finfecha);
+            } else {
+                throw new Exception("theres not Bug whit that ID = "+bugid);
+            }
+                    
+        } catch (SQLException ex) {
+            Logger.getLogger(ModeloBug.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return elBug;
+        
+    }
+
+    void actualizarBug(Bug bugaActualizar) throws Exception{
+       Connection miConnection = null;
+       PreparedStatement miStatement = null;
+       
+        try {
+            miConnection = origenDatos.getConnection();
+            String instruccionSQL="UPDATE BUG SET NAME=?, TYPE=?, DESCRIPTION=?, STATUS=?, USER=?, INITIALDATE=?, FINALDATE=?"+
+                    "WHERE ID=?";
+            miStatement = miConnection.prepareStatement(instruccionSQL);
+            
+            miStatement.setString(1, bugaActualizar.getbName());
+            miStatement.setString(2, bugaActualizar.getbType());
+            miStatement.setString(3, bugaActualizar.getbDescription());
+            miStatement.setString(4, bugaActualizar.getbStatus());
+            miStatement.setString(5, bugaActualizar.getbUser());
+            
+            //convirtiendo de fecha Util.Date a sql.Date
+            java.util.Date utilDate = bugaActualizar.getBinitial_Date();
+            long fechaEnlong = utilDate.getTime();
+            java.sql.Date fechaConvertida;
+            fechaConvertida = new java.sql.Date(fechaEnlong);            
+            miStatement.setDate(6, fechaConvertida);
+            
+            java.util.Date utilDate2 = bugaActualizar.getBfinal_Date();
+            long fechaEnlong2 = utilDate2.getTime();
+            java.sql.Date fechaConvertida2;
+            fechaConvertida2 = new java.sql.Date(fechaEnlong2);            
+            miStatement.setDate(7, fechaConvertida2);
+            
+            miStatement.setInt(8, bugaActualizar.getbCode());
             
             miStatement.execute();
             

@@ -7,7 +7,6 @@ package paquete.com.Bugtracker;
 import jakarta.annotation.Resource;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,6 +62,18 @@ public class ControladorBug extends HttpServlet {
              case "listar" : obtenerBugs(request,response);
                 break;
              case "insertar_BBDD" : insertarBugs(request,response);
+                break;
+             case "cargar" : cargarBugs(request,response);
+                break;
+             case "actualizar_BBDD" : {
+                 try {
+                     actualizarBug(request, response);
+                 } catch (Exception ex) {
+                     Logger.getLogger(ControladorBug.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+             }
+                break;
+
                 
              default : obtenerBugs(request,response);
         }
@@ -129,6 +140,7 @@ public class ControladorBug extends HttpServlet {
     }   
 
     private void insertarBugs(HttpServletRequest request, HttpServletResponse response) {
+       // int code = Integer.parseInt(request.getParameter("bug_name"));
         String name = request.getParameter("bug_name");
         String type = request.getParameter("type");
         String description = request.getParameter("description");
@@ -148,6 +160,61 @@ public class ControladorBug extends HttpServlet {
         Bug newBug = new Bug(name,type,description,status,user,bugFecha);
         
         ModeloBug.addNewBug(newBug);
+        
+        obtenerBugs(request,response);
+    }
+
+    private void cargarBugs(HttpServletRequest request, HttpServletResponse response) {
+        String bs = request.getParameter("bugID");
+        int bugID = Integer.parseInt(bs) ;
+        
+        Bug newBug;
+        
+         try {
+             
+             newBug = modeloBug.getBug(bugID);
+         
+             request.setAttribute("BugaActualizar", newBug);
+             
+             RequestDispatcher miDispatcher = request.getRequestDispatcher("/Actualizar_bugs.jsp");
+             
+             miDispatcher.forward(request, response);
+
+         
+         } catch (Exception ex) {
+             Logger.getLogger(ControladorBug.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        
+    }
+
+    private void actualizarBug(HttpServletRequest request, HttpServletResponse response)throws Exception {
+        int codigoBug = Integer.parseInt(request.getParameter("codigo_bug"));
+        
+        String name = request.getParameter("name_bug");
+        String type = request.getParameter("type_bug");
+        String description = request.getParameter("description_bug");
+        String status = request.getParameter("status_bug");
+        String user = request.getParameter("user_bug");
+        
+        SimpleDateFormat formatofecha = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechainicial = null;
+        Date fechafinal = null;
+        
+         try {
+             
+             fechainicial = formatofecha.parse(request.getParameter("initial_date"));
+             fechafinal = formatofecha.parse(request.getParameter("final_date"));
+             
+         } catch (ParseException ex) {
+             Logger.getLogger(ControladorBug.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        
+        Bug bugaActualizar = new Bug(codigoBug,name,type,description,status,user,fechainicial,fechafinal);
+         try {
+             modeloBug.actualizarBug(bugaActualizar);
+         } catch (Exception ex) {
+             Logger.getLogger(ControladorBug.class.getName()).log(Level.SEVERE, null, ex);
+         }
         
         obtenerBugs(request,response);
     }
