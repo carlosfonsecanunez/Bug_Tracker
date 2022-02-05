@@ -41,8 +41,13 @@
                 <td class="cabecera">USER</td>
                 <td class="cabecera">INITIAL DATE</td>
                 <td class="cabecera">FINAL DATE</td>
+                <td class="cabecera">ACTION</td>
             </tr>
             <c:forEach var="temBug" items="${MISBUGS}">
+                <c:url var="linktemp" value="ControladorBug">
+                    <c:param name="instruccion" value="cargar"></c:param>
+                    <c:param name="codigo_bug" value="${temBug.bCode}"></c:param>
+                </c:url>   
                 <tr>
                     <td class="filas">${temBug.bCode}</td>
                     <td class="filas">${temBug.bName}</td>
@@ -51,7 +56,8 @@
                     <td class="filas">${temBug.bStatus}</td>
                     <td class="filas">${temBug.bUser}</td>
                     <td class="filas">${temBug.binitial_Date}</td>
-                    <td class="filas">${temBug.bfinal_Date}</td>                 
+                    <td class="filas">${temBug.bfinal_Date}</td>    
+                    <td class="filas"><a href="${linktemp}">Update</a></td> 
                 </tr>
             </c:forEach>
         </table>

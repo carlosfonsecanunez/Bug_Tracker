@@ -63,6 +63,11 @@ public class ControladorBug extends HttpServlet {
              case "listar" : obtenerBugs(request,response);
                 break;
              case "insertar_BBDD" : insertarBugs(request,response);
+                break;
+             case "cargar" : cargarBug(request,response);
+                break;
+             case "actualizarBBDD" : actualizar(request,response);
+                break;
                 
              default : obtenerBugs(request,response);
         }
@@ -151,6 +156,35 @@ public class ControladorBug extends HttpServlet {
         
         obtenerBugs(request,response);
     }
+
+    private void actualizar(HttpServletRequest request, HttpServletResponse response) {
+        int codibug = Integer.parseInt(request.getParameter("codigo_bug"));
+        String name = request.getParameter("bug_name");
+        String type = request.getParameter("type");
+        String desc = request.getParameter("description");
+        String status = request.getParameter("status");
+        String user = request.getParameter("user");
+        
+        Bug bug = new Bug(codibug,name,type,desc,status,user);
+        
+        modeloBug.actualizar(bug);
+        
+        obtenerBugs(request,response);
+        
+    }
+
+    private void cargarBug(HttpServletRequest request, HttpServletResponse response) {
+       
+        int codigo = Integer.parseInt(request.getParameter("codigo_bug"));
+        try{
+        Bug bug = modeloBug.getBug(codigo);
+        request.setAttribute("bugaActualizar", bug);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/actualizarBug.jsp");
+              
+        dispatcher.forward(request, response);
+        }catch(ServletException | IOException e){}
+        }
+        
 
     
 }

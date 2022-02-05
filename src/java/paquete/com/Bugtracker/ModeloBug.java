@@ -94,4 +94,57 @@ public class ModeloBug {
             Logger.getLogger(ModeloBug.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    Bug getBug(int codigo) {
+        Bug bug=null;
+        Connection miConnection = null;
+        PreparedStatement ps = null;
+        ResultSet miRs = null;
+        try {
+            miConnection = origenDatos.getConnection();
+            
+            String insSql = "select * from BUG WHERE ID=?";
+            ps = miConnection.prepareStatement(insSql);
+            ps.setInt(1, codigo);
+            miRs= ps.executeQuery();
+            
+            if (miRs.next()){
+                int codi = miRs.getInt(1);
+                String name = miRs.getString(2);
+                String type = miRs.getString(3);
+                String description = miRs.getString(4);
+                String status = miRs.getString(5);
+                String user = miRs.getString(6);
+                
+                bug =new Bug(codi,name,type,description,status,user);
+            }
+               
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ModeloBug.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       return bug;
+    }
+
+    void actualizar(Bug bug) {
+        Connection miConnection = null;
+        PreparedStatement miStatement = null;
+       
+        try {
+            miConnection = origenDatos.getConnection();
+            String instruccionSQL="UPDATE  BUG SET NAME=?,TYPE=?,DESCRIPTION=?,STATUS=?,USER=?"+
+                    "WHERE ID=?";
+            miStatement = miConnection.prepareCall(instruccionSQL);
+            
+            miStatement.setString(1, bug.getbName());
+            miStatement.setString(2, bug.getbType());
+            miStatement.setString(3, bug.getbDescription());
+            miStatement.setString(4, bug.getbStatus());
+            miStatement.setString(5, bug.getbUser());
+            miStatement.setInt(6, bug.getbCode());
+            miStatement.execute();
+        }catch(SQLException e){
+            
+        }
+    }
 }

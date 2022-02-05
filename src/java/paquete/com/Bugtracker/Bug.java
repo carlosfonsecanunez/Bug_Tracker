@@ -74,6 +74,15 @@ public class Bug {
         this.bUser = bUser;
         this.binitial_Date = binitial_Date;
     }
+    public Bug(int bCode,String bName,String bType,String bDescription,String bStatus,String bUser){
+        this.bCode = bCode;
+        this.bName = bName;
+        this.bType = bType;
+        this.bDescription = bDescription;
+        this.bStatus = bStatus;
+        this.bUser = bUser;
+        
+    }
     /**
      * @return the bCode
      */
